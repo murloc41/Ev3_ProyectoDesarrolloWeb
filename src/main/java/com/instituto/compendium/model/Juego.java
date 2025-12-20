@@ -25,7 +25,6 @@ public class Juego {
     @Size(max = 500, message = "La descripción no debe superar los 500 caracteres")
     private String descripcion;
 
-    @NotBlank(message = "La imagen es obligatoria")
     private String imagen;
     
     private Double calificacion = 0.0;
@@ -39,8 +38,6 @@ public class Juego {
         joinColumns = @JoinColumn(name = "juego_id"),
         inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
-    @NotNull(message = "Debe seleccionar al menos una categoría")
-    @Size(min = 1, message = "Debe seleccionar al menos una categoría")
     private Set<Categoria> categorias = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -49,8 +46,6 @@ public class Juego {
         joinColumns = @JoinColumn(name = "juego_id"),
         inverseJoinColumns = @JoinColumn(name = "plataforma_id")
     )
-    @NotNull(message = "Debe seleccionar al menos una plataforma")
-    @Size(min = 1, message = "Debe seleccionar al menos una plataforma")
     private Set<Plataforma> plataformas = new HashSet<>();
 
     // Métodos para compatibilidad con código existente
