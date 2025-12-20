@@ -50,6 +50,16 @@ public class JuegoController {
                                RedirectAttributes redirectAttributes,
                                Model model) {
         System.out.println("[DEBUG] guardarJuego -> titulo=" + juego.getTitulo() + ", categoriaIds=" + categoriaIds + ", plataformaIds=" + plataformaIds);
+        // Validación manual para listas y imagen (solo crear)
+        if (categoriaIds == null || categoriaIds.isEmpty()) {
+            result.reject("categoriasMin", "Debe seleccionar al menos una categoría");
+        }
+        if (plataformaIds == null || plataformaIds.isEmpty()) {
+            result.reject("plataformasMin", "Debe seleccionar al menos una plataforma");
+        }
+        if ((imagen == null || imagen.isEmpty()) && (juego.getImagen() == null || juego.getImagen().isEmpty())) {
+            result.rejectValue("imagen", "NotBlank.juego.imagen", "La imagen es obligatoria");
+        }
         if (result.hasErrors()) {
             System.out.println("[ERROR] guardarJuego -> errores de binding: " + result.getAllErrors());
             model.addAttribute("categorias", categoriaRepository.findAll());
@@ -110,6 +120,16 @@ public class JuegoController {
                                  RedirectAttributes redirectAttributes,
                                  Model model) {
         System.out.println("[DEBUG] actualizarJuego -> id=" + id + ", tituloNuevo=" + juego.getTitulo() + ", categoriaIds=" + categoriaIds + ", plataformaIds=" + plataformaIds);
+        // Validación manual para listas; imagen solo se exige si no hay previa y no se sube nueva
+        if (categoriaIds == null || categoriaIds.isEmpty()) {
+            result.reject("categoriasMin", "Debe seleccionar al menos una categoría");
+        }
+        if (plataformaIds == null || plataformaIds.isEmpty()) {
+            result.reject("plataformasMin", "Debe seleccionar al menos una plataforma");
+        }
+        if ((imagen == null || imagen.isEmpty()) && (juego.getImagen() == null || juego.getImagen().isEmpty())) {
+            result.rejectValue("imagen", "NotBlank.juego.imagen", "La imagen es obligatoria");
+        }
         if (result.hasErrors()) {
             System.out.println("[ERROR] actualizarJuego -> errores de binding: " + result.getAllErrors());
             model.addAttribute("categorias", categoriaRepository.findAll());
