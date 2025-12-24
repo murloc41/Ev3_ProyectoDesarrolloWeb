@@ -1,0 +1,110 @@
+<!-- Ejemplo de template para listar y crear pacientes -->
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Pacientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- FORMULARIO CREAR PACIENTE -->
+  <ion-card class="crear-paciente-card">
+    <ion-card-header>
+      <ion-card-title>Crear Nuevo Paciente</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input 
+          [(ngModel)]="nuevoPaciente.nombre"
+          placeholder="Ej: Juan Pérez"
+          type="text"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">RUT</ion-label>
+        <ion-input 
+          [(ngModel)]="nuevoPaciente.rut"
+          placeholder="Ej: 12.345.678-9"
+          type="text"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Piso (1-20)</ion-label>
+        <ion-input 
+          [(ngModel)]="nuevoPaciente.piso"
+          type="number"
+          min="1"
+          max="20"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Turno</ion-label>
+        <ion-select 
+          [(ngModel)]="nuevoPaciente.turno"
+          [compareWith]="compareFn"
+        >
+          <ion-select-option *ngFor="let turno of turnoOptions" [value]="turno">
+            {{ turno }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        color="primary"
+        (click)="crearPaciente()"
+        [disabled]="loading || !validarPaciente()"
+      >
+        <ion-icon name="add-circle"></ion-icon>
+        Crear Paciente
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- LISTA DE PACIENTES -->
+  <ion-card *ngIf="pacientes.length > 0">
+    <ion-card-header>
+      <ion-card-title>Pacientes Registrados ({{ pacientes.length }})</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngFor="let paciente of pacientes" lines="full">
+        <ion-item-sliding #slidingItem>
+          <ion-item>
+            <ion-label>
+              <h2><strong>{{ paciente.nombre }}</strong></h2>
+              <p>RUT: {{ paciente.rut }}</p>
+              <p>Piso: {{ paciente.piso }} | Turno: {{ paciente.turno }}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="warning">
+              <ion-icon name="pencil"></ion-icon>
+              Editar
+            </ion-item-option>
+            <ion-item-option 
+              color="danger"
+              (click)="eliminarPaciente(paciente.id!, paciente.nombre); slidingItem.close()"
+            >
+              <ion-icon name="trash"></ion-icon>
+              Eliminar
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- SIN PACIENTES -->
+  <ion-card *ngIf="!loading && pacientes.length === 0">
+    <ion-card-content class="ion-text-center">
+      <ion-icon name="people-outline" style="font-size: 48px; color: #999;"></ion-icon>
+      <p>No hay pacientes registrados</p>
+      <p style="color: #999; font-size: 12px;">Crea uno usando el formulario arriba</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
