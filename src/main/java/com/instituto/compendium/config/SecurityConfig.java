@@ -4,6 +4,7 @@ import com.instituto.compendium.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,6 +30,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors(Customizer.withDefaults())
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests((authorize) -> 
                 authorize
                     .requestMatchers(
@@ -46,7 +49,9 @@ public class SecurityConfig {
                         "/guias",
                         "/uploads/**",
                         "/error",
-                        "/index"
+                        "/index",
+                        "/api/**",
+                        "/actuator/**"
                     ).permitAll()
                     .requestMatchers("/admin/**", "/juegos/**", "/roles/**", "/usuarios/**").hasRole("ADMIN")
                     .requestMatchers("/guias/nueva", "/guias/*/editar", "/guias/*/eliminar").hasAnyRole("ADMIN", "AUTOR")
@@ -65,9 +70,6 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .permitAll()
-            )
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**")
             )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
